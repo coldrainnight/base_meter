@@ -1,0 +1,51 @@
+
+
+typedef struct
+{
+    INT16U obis; /*"对象标识"*/
+    DATA_ADDR addr; /*"数据存储起始地址"*/
+    INT16U len; /*"数据长度"*/
+    INT8U ObjNum; /*"数据块成员数"*/
+    INT8U format_id; /*"数据格式属性"*/
+}ST_BLK_DATA_ATTR;
+
+typedef struct
+{
+    INT16U obis; /*"对象标识"*/
+    DATA_ADDR addr; /*"数据存储起始地址"*/
+    INT16U len; /*"数据长度"*/
+    INT8U format_id; /*"数据格式属性"*/
+}ST_SINGLE_DATA_ATTR;
+
+typedef struct
+{
+    INT16U obis; /*"数据标识"*/
+    INT8U format_id; /*"记录存储数据格式"*/
+}ST_FIXED_LIST_ATTR;
+
+typedef struct
+
+{
+    INT16U obis; /*"关联对象数据标识"*/
+    const ST_FIXED_LIST_ATTR *pdatalis1; /*"固定记录内容列表"*/
+    const ST_FIXED_LIST_ATTR *pdatalis2; /*"关联对象列表数据对象"*/
+    INT8U data_num1; /*"固定记录内容列表数据对象个数"*/
+    INT8U data_num2; /*"关联对象列表数据对象个数"*/
+}ST_FELXOBJ_DATA_ATTR;
+
+typedef struct
+{
+    INT16U obis; /*"记录对象标识"*/
+    INT16U file; /*"文件系统中对应的虚拟文件名"*/
+    INT16U timesAddr; /*"记录次数内卡存储地址"*/
+    INT16U fileSize;   /*"记录文件大小"*/
+    INT16U startFelxObj; /*"起始记录关联对象标识"*/
+    INT16U endFelxObj; /*"结束记录关联对象标识"*/
+}ST_FILE_ATTR;
+
+typedef INT8S (* ACTION)(void *pdin, void *pdout);
+typedef struct
+{
+    INT16U obis; /*"对象标识"*/
+    ACTION Fuction; /*"执行方法"*/    
+}ST_ACTION_ATTR;

@@ -1,0 +1,184 @@
+//-------------------------------------------------------------------------
+//      ILINK command file template for RL78 microcontroller R5F10NPJ.
+//
+//      This file can be used to link object files from the RL78
+//      Assembler, IASMRL78, and the C/C++ compiler ICCRL78.
+//
+//          This file is generated from the device file:
+//          DR5F10NPJ.DVF
+//          Copyright(C) 2016 Renesas
+//
+//          Core type: s3
+//
+//          Format version 3.00, File version 1.00 
+//-------------------------------------------------------------------------
+
+initialize by copy with simple ranges, packing = auto { rw, R_DATA, R_BSS, R_DATAF, R_BSSF, R_SDATA, R_SBSS };
+initialize manually { R_CONST, ro section .const, ro section .switch };
+do not initialize   { section *.noinit };
+
+define memory mem with size = 1M;
+
+// 瑞萨电子自编程库FSL 使用注意事项2017.1.18 hr add
+//*******************************************************************************
+// CAUTIONS:
+//   1.  Do not locate any function arguments, data buffers for FSL or stack
+//       to the short address area from 0xFFE20 to 0xFFEDF.
+//   2.  It is not allowed to locate any arguments and stack memory
+//       to the self-RAM area.
+//       For the RAM areas used by the flash library for the given 
+//       microcontroller, please consult "Self RAM list of Flash Self-Programming
+//       Library for RL78 Family" (R20UT2943(JPN), R20UT2944(ENG))
+//   3.  Please also consider further restrictions regarding memory sections 
+//       for your target microcontroller (e.g. for on-chip debugging and
+//       the mirror area). 
+//       For details, please consult the "User's Manual: Hardware" of your target
+//       microcontroller.
+//
+// SECTIONS:
+//   1.  FSL_FCD, FSL_FECD, FSL_RCD, FSL_BCD, FSL_BECD
+//       Library sections are not mapped across any boundary of 64KB Flash page.
+//*******************************************************************************
+
+// Set the symbol __RESERVE_OCD_ROM to 1 to reserve the OCD area for debugging.
+// IDE: Symbol can be defined within the project settings here:
+//      "Project"-->"Options..."->"Linker"-->"Config"-->"Configuration file symbol definitions"
+//      Symbol definition: __RESERVE_OCD_ROM=1
+// Command line: --config_def __RESERVE_OCD_ROM=1
+
+if (isdefinedsymbol(__RESERVE_OCD_ROM))
+{
+  if (__RESERVE_OCD_ROM == 1)
+  {
+    define region OCD_ROM_AREA = mem:[from 0x3FE00 size 0x0200];  // 调试用到的ROM空间512字节
+  }
+  else
+  {
+    define region OCD_ROM_AREA = mem:[from 0x0 size 0];
+  }
+}
+else
+{
+  define region OCD_ROM_AREA = mem:[from 0x0 size 0];
+}
+
+// Set the symbol __RESERVE_OCD_TRACE_RAM to 1 to reserve the OCD trace ram area for debugging.
+// IDE: Symbol can be defined within the project settings here:
+//      "Project"-->"Options..."->"Linker"-->"Config"-->"Configuration file symbol definitions"
+//      Symbol definition: __RESERVE_OCD_TRACE_RAM=1
+// Command line: --config_def __RESERVE_OCD_TRACE_RAM=1
+
+if (isdefinedsymbol(__RESERVE_OCD_TRACE_RAM))
+{
+  if (__RESERVE_OCD_TRACE_RAM == 1)
+  {
+    define region OCD_TRACE_RAM = mem:[from 0xFC300 size 0x0400];  // 片上调试跟踪功能
+  }
+  else
+  { 
+    define region OCD_TRACE_RAM = mem:[from 0x0 size 0];
+  }
+}
+else
+{
+  define region OCD_TRACE_RAM = mem:[from 0x0 size 0];
+}
+
+define region HOTPLUGIN_RAM = mem:[from 0x0 size 0];
+  
+define region EXLUDE_ROM_REGION = OCD_ROM_AREA;
+define region EXLUDE_RAM_REGION = HOTPLUGIN_RAM | OCD_TRACE_RAM;
+
+//define region const_rom = mem:[from 0x02000 to 0x02100];  //  减去调试用到的空间
+
+define region ROM_near = mem:[from 0x000D8 to 0x02000] - EXLUDE_ROM_REGION;  //  减去调试用到的空间
+define region ROM_far  = mem:[from 0x000D8 to 0x02000] | mem:[from 0x10000 to 0x1FFFF] | mem:[from 0x20000 to 0x2FFFF] | mem:[from 0x30000 to 0x3FFFF] - EXLUDE_ROM_REGION;
+define region ROM_huge = mem:[from 0x000D8 to 0x02000] - EXLUDE_ROM_REGION;  
+//define region SADDR    = mem:[from 0xFFE20 to 0xFFEDF] - EXLUDE_RAM_REGION; // 短直接寻址空间固定
+//define region RAM_near = mem:[from 0xFBF00 to 0xFFE1F] - EXLUDE_RAM_REGION; // ram 区near寻址区域 
+define region RAM_near = mem:[from 0xFC300 to 0xFFE1F] - EXLUDE_RAM_REGION; // ram 区near寻址区域 
+define region RAM_far  = mem:[from 0xFBF00 to 0xFFE1F] - EXLUDE_RAM_REGION; // ram 区far寻址区域 
+define region RAM_huge = mem:[from 0xFBF00 to 0xFFE1F] - EXLUDE_RAM_REGION; // ram 区huge寻址区域 
+define region VECTOR   = mem:[from 0x00000 to 0x0007F];  // 中断向量表ROM区域
+define region CALLT    = mem:[from 0x00080 to 0x000BF];  // call跳转表ROM区域
+define region EEPROM   = mem:[from 0xF1000 to 0xF17FF];  // dataflash 区域
+ 
+define block NEAR_HEAP  with alignment = 2, size = _NEAR_HEAP_SIZE {  };
+define block FAR_HEAP   with alignment = 2, size = _FAR_HEAP_SIZE {  };
+define block HUGE_HEAP  with alignment = 2, size = _HUGE_HEAP_SIZE {  };
+define block CSTACK     with alignment = 2, size = _STACK_SIZE { rw section CSTACK };
+define block INIT_ARRAY with alignment = 2, fixed order { ro section .preinit_array,
+                                                          ro section .init_array };
+define block MIRROR_ROM with maximum size =1000 { ro R_CONST_init,
+                                                                        ro section .const_init,
+                                                                      ro section .switch_init };
+define block MIRROR_RAM with maximum size = 1000 { rw R_CONST,
+                                                                      rw section .const,
+                                                                      rw section .switch };
+                                                                        // _NEAR_CONST_LOCATION_SIZE
+define block OPT_BYTE with size = 4  { R_OPT_BYTE,
+                                       ro section .option_byte,
+                                       ro section OPTBYTE };
+define block SECUR_ID with size = 10 { R_SECUR_ID,
+                                       ro section .security_id,
+                                       ro section SECUID };
+
+
+place at address mem:0x00000       { ro section .intvec }; // 中断向量表ROM分配
+place at address mem:0x000C0       { block OPT_BYTE };   // 选项字节ROM分配
+place at address mem:0x000C4       { block SECUR_ID };   // 调试ID ROM分配
+place at address mem:  0x02000    { block MIRROR_ROM };     //_NEAR_CONST_LOCATION_START             { block MIRROR_ROM }; // const数据ROM
+place at address mem:  0xf2000   { block MIRROR_RAM };                                    //(_NEAR_CONST_LOCATION_START | 0xF0000) { block MIRROR_RAM };
+
+"CALLT":place in CALLT             { R_CALLT0, ro section .callt0 };
+
+"ROMNEAR":place in ROM_near        { R_TEXT, ro section .text}; // 程序开始.text
+
+"ROMFAR":place in ROM_far          { block INIT_ARRAY,
+                                     R_TEXTF_UNIT64KP,
+                                     ro section .text_unit64kp,
+                                     
+                                     ro section FSL_FCD,
+                                     ro section FSL_FECD, 
+                                     ro section FSL_RCD, 
+                                     ro section FSL_BCD,
+                                     ro section FSL_BECD,
+                                     
+                                      ro section .constf,
+                                     ro section .switchf,
+                                     ro };
+                                     
+
+                                     
+
+"ROMHUGE":place in ROM_huge        { ro section .consth,
+                                     R_TEXTF,
+                                     ro section .textf };
+
+"RAMNEAR":place in RAM_near        { block NEAR_HEAP,
+                                     block CSTACK,
+                                     zi section .iar.dynexit,
+                                     R_DATA,
+                                     rw section .data,
+                                     R_BSS,
+                                     rw section .bss*,
+                                     rw };
+
+"RAMFAR":place in RAM_far          { block FAR_HEAP,
+                                     R_DATAF,
+                                     rw section .dataf,
+                                     rw section .data_unit64kp,
+                                     rw section .bss_unit64kp,
+                                     R_BSSF,
+                                     rw section .bssf* };
+
+"RAMHUGE":place in RAM_huge        { block HUGE_HEAP,
+                                     rw section .hdata,
+                                     rw section .hbss* };
+
+////"SADDRMEM":place in SADDR          { rw section .sdata,
+////                                     R_SDATA,
+////                                     rw section .sbss*,
+////                                     R_SBSS,
+////                                     rw section .wrkseg };
+

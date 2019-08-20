@@ -1,0 +1,5 @@
+---- Now645ComId Matches (4 in 1 files) ----
+DLT645.c (app\userinterface\protocolstack\ps_645)://static INT8U Now645ComId;
+DLT645.c (app\userinterface\protocolstack\ps_645):    //COM_StartSend(Now645ComId, Buf, 12);
+DLT645.c (app\userinterface\protocolstack\ps_645):    if((E_COM_IR == Now645ComId)&&(0 ==IRAuthRmnTime)&&(ChkStatus(E_FAC) == FALSE))  
+DLT645.c (app\userinterface\protocolstack\ps_645):    Now645ComId = rCommPort;
