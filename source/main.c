@@ -209,9 +209,9 @@ void SoftwareInit(void)
         //MCU_DelayMs(300);
         INT_Dis(E_INT_ID_SPI1);
     }
-	//init_flg = 0xab;//comment   for debug 
+	init_flg = 0xab;//comment   for debug 
     if(((TRUE == ChkStatus(E_FIRST_PWR_ON)) && (TRUE == ChkStatus(E_FAC))
-      &&(SID_TRUE == SID_PollRead(SID_FAC))  || (init_flg == 0xab))) /*"第一次上电"*/
+      &&(SID_TRUE == SID_PollRead(SID_FAC))  ||( (init_flg == 0xab)&&(SID_TRUE == SID_PollRead(SID_FAC))))) 
     {
         if(TRUE != FS_Init(FIRST_PWR_ON))
         {
