@@ -1619,7 +1619,7 @@ void Host_Commu_Sec_Proc(void)
 	len +=7;
 	LIB_RvsSelf(buf,len);
 	
-    len += get_bm_lrm_data(buf+len);
+    len += get_bm_lrm_data(buf+len);//len
     tx_pkt_to_peer(0, 0x06, id, buf, len);
 }
 
@@ -1635,7 +1635,7 @@ void Host_Commu_Frz_Data_Push(void)
     len +=7;
     LIB_RvsSelf(buf,len);
 	
-    len += get_bm_frz_data(buf);
+    len += get_bm_frz_data(buf+7);
     tx_pkt_to_peer(0, 0x06, id, buf, len);
 }
 
