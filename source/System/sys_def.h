@@ -430,7 +430,7 @@ typedef struct
 #define D1  ('0')
 
 
-#define  NEW_EEP_FLAG       0xE3610399    /*"新内卡标识"*/
+#define  NEW_EEP_FLAG       0xE3610409    /*"新内卡标识"*/
 
 
 #define  HEX_FRMT     1   /*"宏定义HEX时间格式"*/
