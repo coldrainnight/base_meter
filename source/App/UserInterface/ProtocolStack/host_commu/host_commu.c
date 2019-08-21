@@ -1515,6 +1515,8 @@ INT16U get_bm_lrm_data(INT8U *buf)
     return len;
 }
 
+INT32U engyMin;
+
 INT16U get_bm_frz_data(INT8U *buf)
 {
     INT16U len;
@@ -1525,9 +1527,15 @@ INT16U get_bm_frz_data(INT8U *buf)
     GetSingle(E_VOLT_LA, buf + len);
     len += 2;
     GetSingle(E_CURR_LA, buf + len);
+    INT32U curr=10000;
+    LIB_MemCpy((INT8U *)&curr, buf + len, 4);
+    LIB_CharToBcdNByte(buf+len,4);
     len += 4;   
 
     GetSingle(E_ACTIVE_PWR, buf + len);
+    INT32U pwr=22000;
+    LIB_MemCpy((INT8U *)&pwr, buf + len, 4);
+    LIB_CharToBcdNByte(buf+len, 4);
     len += 4; 
     GetSingle(E_REACTIVE_PWR, buf + len);
     len += 4; 
@@ -1542,6 +1550,9 @@ INT16U get_bm_frz_data(INT8U *buf)
     len += 2; 
 
     GetSingle(E_PA_ENGY, buf + len);
+	engyMin+=2222*60;
+	LIB_MemCpy((INT8U *)&engy, buf + len, 5);
+	LIB_CharToBcdNByte(buf+len, 5);
     len += 5; 
 	GetSingle(E_NA_ENGY, buf + len);
     len += 5;
