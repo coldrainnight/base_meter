@@ -1528,8 +1528,9 @@ INT16U get_bm_frz_data(INT8U *buf)
     len += 2;
     GetSingle(E_CURR_LA, buf + len);
     INT32U curr=10000;
+    LIB_CharToBcdNByte(&curr,4);
     LIB_MemCpy((INT8U *)&curr, buf + len, 4);
-    LIB_CharToBcdNByte(buf+len,4);
+   // LIB_CharToBcdNByte(buf+len,4);
     len += 4;   
 
     GetSingle(E_ACTIVE_PWR, buf + len);
