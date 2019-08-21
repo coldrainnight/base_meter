@@ -40,33 +40,11 @@ INT32U currDI;
 static void reset_LDID(void);
 
 
-/*" 返回645格式的时间 倒序的YYMMDDWWhhmmss"*/
-INT8U get_sys_tm_645_fmt(INT8U *tmp)
-{
-    INT8U buf[10];
-    
-    GetSingle(E_SYS_TIME, tmp);
-    //LIB_BcdToCharNByte(tmp, 7);
-	LIB_CharToBcdNByte(tmp, 7);/*电表时钟是hex类型*/
-    buf[0] = tmp[6]; //WW
-    buf[1] = tmp[3]; //hh
-    buf[2] = tmp[4]; //mm
-    buf[3] = tmp[5]; //ss
-    
-    tmp[3] = buf[0];
-    tmp[4] = buf[1];
-    tmp[5] = buf[2];
-    tmp[6] = buf[3];
-
-    LIB_RvsSelf(tmp, 7);
-
-    return 7;
-}
 
 INT8U cfg_set_time_pkt_data(INT8U *data)
 {
     INT8U tmp[10];
-    
+    GetSingle(E_SYS_TIME, tmp);
     get_sys_tm_645_fmt(tmp);
 
     LIB_MemSet(0x00, data, 8);
@@ -242,6 +220,7 @@ INT8U identify_pkt_queue_rx_proc(ST_FRAME645 *res, INT8U len, INT8U dev)
         {
             if(res->dataId.asLong == 0x0400010c)
             {
+            	GetSingle(E_SYS_TIME, tmp);
                 get_sys_tm_645_fmt(tmp);
 
                 tx_pkt_to_peer(1, 0x91, res->dataId, tmp, 7);

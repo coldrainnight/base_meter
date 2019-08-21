@@ -139,4 +139,5 @@ extern INT8U LIB_DataCheckSum(INT8U *inpbuf, INT16U  length,INT8U init);
 extern INT8U LIB_CalBCC(INT8U *inpbuf, INT32U length);
 extern INT8U LIB_ChkDataValid(INT8U *pData, INT16U DataLen, CRC_DATA_TP CmpCrc);
 extern INT32U LIB_Pow10(INT8U n);
+extern   INT8U get_sys_tm_645_fmt(INT8U *tmp);
 #endif

@@ -1635,6 +1635,7 @@ void Host_Commu_Sec_Proc(void)
     //len += get_clr_relay_cmd(buf + len);
     //len += get_clr_led_cmd(buf + len);
    // len = get_comm_data(buf, sec_data, ARRAY_SIZE(sec_data));
+    GetSingle(E_SYS_TIME, tmp);
     get_sys_tm_645_fmt(tmp);
     LIB_MemCpy(tmp, buf , 7);
     len +=7;
@@ -1660,6 +1661,7 @@ void Host_Commu_Frz_Data_Push(void)
     len +=7;
     LIB_RvsSelf(buf,len);
 	#endif
+    GetSingle(E_SYS_TIME, tmp);
     get_sys_tm_645_fmt(tmp);
     LIB_MemCpy(tmp, buf , 7);
     len +=7;
@@ -1693,7 +1695,7 @@ void Host_Commu_Bm_Data_Sync(INT8U type)
             //LIB_RvsSelf(buf + len, 7);
             len += 7;
 			#endif
-
+		GetSingle(E_SYS_TIME, tmp);
 		get_sys_tm_645_fmt(tmp);
     		LIB_MemCpy(tmp, buf+len , 7);
     		len +=7;
@@ -1705,6 +1707,7 @@ void Host_Commu_Bm_Data_Sync(INT8U type)
             //LIB_RvsSelf(buf + len, 7);
             len += 7;
 			#endif
+			GetSingle(E_SYS_TIME, tmp);
 		get_sys_tm_645_fmt(tmp);
     		LIB_MemCpy(tmp, buf+len , 7);
     		len +=7;
@@ -1718,6 +1721,7 @@ void Host_Commu_Bm_Data_Sync(INT8U type)
             //LIB_RvsSelf(buf + len, 7);
             len += 7;
 			#endif
+			GetSingle(E_SYS_TIME, tmp);
 		get_sys_tm_645_fmt(tmp);
     		LIB_MemCpy(tmp, buf+len , 7);
     		len +=7;

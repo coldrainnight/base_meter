@@ -1766,3 +1766,25 @@ INT32U LIB_Pow10(INT8U n)
 
     return rsult;
 }
+
+INT8U get_sys_tm_645_fmt(INT8U *tmp)
+{
+    INT8U buf[10];
+    
+    //GetSingle(E_SYS_TIME, tmp);
+    //LIB_BcdToCharNByte(tmp, 7);
+	LIB_CharToBcdNByte(tmp, 7);/*电表时钟是hex类型*/
+    buf[0] = tmp[6]; //WW
+    buf[1] = tmp[3]; //hh
+    buf[2] = tmp[4]; //mm
+    buf[3] = tmp[5]; //ss
+    
+    tmp[3] = buf[0];
+    tmp[4] = buf[1];
+    tmp[5] = buf[2];
+    tmp[6] = buf[3];
+
+    LIB_RvsSelf(tmp, 7);
+
+    return 7;
+}
