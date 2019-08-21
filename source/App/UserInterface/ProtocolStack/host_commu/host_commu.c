@@ -1361,6 +1361,25 @@ COMM_OBIS sec_data[] =
     //{E_A_CURR_CONT_TOTAL, E_UBCD_2_BYTE, -2},
 };
 
+
+COMM_OBIS min_data[] =
+{
+    {E_VOLT_LA, E_UBCD_2_BYTE, -1},
+    {E_CURR_LA, E_BCD_4_BYTE, -4},
+    {E_ACTIVE_PWR, E_BCD_4_BYTE, -4},
+    {E_REACTIVE_PWR, E_BCD_4_BYTE, -4},
+    {E_FACTOR, E_BCD_4_BYTE, -4},
+    {E_FREQ, E_UBCD_2_BYTE, -2},
+    {E_PA_ENGY, E_UBCD_5_BYTE, -4},
+    {E_NA_ENGY, E_UBCD_5_BYTE, -4},
+    {E_R_ENGY_I, E_UBCD_5_BYTE, -4},
+    {E_R_ENGY_II, E_UBCD_5_BYTE, -4},
+    {E_R_ENGY_III, E_UBCD_5_BYTE, -4},
+    {E_R_ENGY_IV, E_UBCD_5_BYTE, -4},
+    //{E_A_VOLT_CONT_TOTAL, E_UBCD_2_BYTE, -2},
+    //{E_A_CURR_CONT_TOTAL, E_UBCD_2_BYTE, -2},
+};
+
 //INT8U per_o_len[40];
 extern void Lrm_test(void);
 
@@ -1528,7 +1547,7 @@ INT16U get_bm_frz_data(INT8U *buf)
     len += 2;
     GetSingle(E_CURR_LA, buf + len);
     INT32U curr=10000;
-    LIB_CharToBcdNByte(&curr,4);
+    LIB_CharToBcdNByte((INT8U *)&curr,4);
     LIB_MemCpy((INT8U *)&curr, buf + len, 4);
    // LIB_CharToBcdNByte(buf+len,4);
     len += 4;   
@@ -1608,19 +1627,21 @@ void Host_Commu_Sec_Proc(void)
     UN_ID645 id;
     INT8U buf[200];
     INT8U len=0;
+    INT8U tmp[10];
     
     id.asLong = ID_BM_MMT_DATA;
     //len = get_show_data(buf);
     //len += GetSingle(E_DOWNDATA, buf + len);
     //len += get_clr_relay_cmd(buf + len);
     //len += get_clr_led_cmd(buf + len);
-    //len = get_comm_data(buf, sec_data, ARRAY_SIZE(sec_data));
-    GetSingle(E_SYS_TIME, buf);/*"取系统时间"*/  
-    LIB_CharToBcdNByte(buf, 7);
-	len +=7;
-	LIB_RvsSelf(buf,len);
+   // len = get_comm_data(buf, sec_data, ARRAY_SIZE(sec_data));
+    get_sys_tm_645_fmt(tmp);
+    LIB_MemCpy(tmp, buf , 7);
+    len +=7;
 	
-    len += get_bm_lrm_data(buf+len);//len
+    // len += get_bm_lrm_data(buf+len);//len
+    get_bm_lrm_data(buf+len);
+    len += get_comm_data(buf+len, sec_data, ARRAY_SIZE(sec_data));
     tx_pkt_to_peer(0, 0x06, id, buf, len);
 }
 
@@ -1629,14 +1650,25 @@ void Host_Commu_Frz_Data_Push(void)
     UN_ID645 id;
     INT8U buf[200];
     INT8U len=0;
+    INT8U len1;
+    INT8U tmp[10];
     
     id.asLong = ID_BM_FRZ_DATA;
-    GetSingle(E_SYS_TIME, buf);/*"取系统时间"*/  
+	#if 0
+    GetSingle(E_SYS_TIME, buf);/*"取系统时间"*/ // yymmddhhmmssww
     LIB_CharToBcdNByte(buf , 7);
     len +=7;
     LIB_RvsSelf(buf,len);
-	
-    len += get_bm_frz_data(buf+7);
+	#endif
+    get_sys_tm_645_fmt(tmp);
+    LIB_MemCpy(tmp, buf , 7);
+    len +=7;
+	  
+    //get_bm_frz_data(buf+7);
+    //len = get_comm_data(buf, min_data, ARRAY_SIZE(min_data));
+    len1 =get_bm_frz_data(buf+7);
+    LIB_MemSet(0x11, buf+7,len1);
+    len+=len1;
     tx_pkt_to_peer(0, 0x06, id, buf, len);
 }
 
@@ -1645,6 +1677,7 @@ void Host_Commu_Bm_Data_Sync(INT8U type)
     UN_ID645 id;
     INT8U buf[200];
     INT8U len;
+	INT8U tmp[10];
     
     id.asLong = ID_BM_DATA_SYNC;
     buf[0] = type;
@@ -1654,24 +1687,40 @@ void Host_Commu_Bm_Data_Sync(INT8U type)
         case 1: /*"上电同步第一阶段握手"*/
             LIB_Reverse(mMtrAddr, buf + len, 6);
             len += 6;
+			#if 0
             GetSingle(E_SYS_TIME, buf + len);/*"取系统时间"*/  
             LIB_CharToBcdNByte(buf + len, 7);
             //LIB_RvsSelf(buf + len, 7);
             len += 7;
+			#endif
+
+		get_sys_tm_645_fmt(tmp);
+    		LIB_MemCpy(tmp, buf+len , 7);
+    		len +=7;
             break;
         case 2: /*"上电同步第二阶段握手"*/
+			#if 0
             GetSingle(E_SYS_TIME, buf + len);/*"取系统时间"*/  
             LIB_CharToBcdNByte(buf + len, 7);
             //LIB_RvsSelf(buf + len, 7);
             len += 7;
+			#endif
+		get_sys_tm_645_fmt(tmp);
+    		LIB_MemCpy(tmp, buf+len , 7);
+    		len +=7;
             
             len += get_bm_lrm_data(buf + len);
             break;
         case 3: /*" 运行时同步"*/
+            #if 0
             GetSingle(E_SYS_TIME, buf + len);/*"取系统时间"*/  
             LIB_CharToBcdNByte(buf + len, 7);
             //LIB_RvsSelf(buf + len, 7);
             len += 7;
+			#endif
+		get_sys_tm_645_fmt(tmp);
+    		LIB_MemCpy(tmp, buf+len , 7);
+    		len +=7;
             break;
     };
 
