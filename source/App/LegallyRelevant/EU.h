@@ -5,7 +5,7 @@
 #include "LRM_Config.h"
 #include "App\message\MS.h"
 
-//#define  EU_TEST
+#define  EU_TEST
 
 #define  MWS_NUM_1KWH               (3600000000UL)/*1kwh对应的mWS数*/
 #define  MWS_NUM_01KWH              (360000000UL) /*0.1kwh对应的mWS数*/

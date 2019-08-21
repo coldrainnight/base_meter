@@ -336,7 +336,14 @@ INT8U TCA_Backup(ST_CMD03 *pPkg)
 		default:
 			break;
     	}
-        pPkg->len = 5;
+	if (RetVal == RET_OK)
+	{
+        	pPkg->len = 9;
+	}
+	else
+	{
+		pPkg->len = 5;
+	}
 		
     return RetVal;
 }

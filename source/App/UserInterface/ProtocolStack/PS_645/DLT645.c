@@ -1874,7 +1874,7 @@ INT16U CM_Far03Cmd(INT8U *Pdata)
     stCmd03.len = *(Pdata+2);/*"获取数据区长度"*/
     stCmd03.DI = (Pdata+3);/*"获取数据标识首地址"*/
     LIB_MemCpy((INT8U *)stCmd03.DI,(INT8U *)&stCmd03.di,4);
-    stCmd03.pData = stCmd03.DI + 4;/*"指向实际数据区"*/ 
+    stCmd03.pData = stCmd03.DI + 8;/*"指向实际数据区,跳过di和操作者代码"*/ 
     switch(stCmd03.di)
     {
 		case 0x070402FF:		
