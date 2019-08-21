@@ -339,6 +339,7 @@ void ParseFrameNoMdf(INT8U *rpFrame, ST_FRAME645 *rpResult)
     }
 }
 
+INT8U hostAddr[6];
 void FrameDataDec0x33(ST_FRAME645 *rpResult)
 {
     INT16U nLength;
@@ -374,6 +375,7 @@ void ParseFrame(INT8U *rpFrame, ST_FRAME645 *rpResult)
     dataIdTmp=0;
     operatorTmp=0;
     nLength = rpFrame[9];
+	LIB_MemCpy((INT8U *)&rpFrame[1], hostAddr, 6);
     if(rpResult->command != 0x05)
     {
         for(i = 0; i < nLength; i++)
@@ -1090,7 +1092,8 @@ INT8U CM_AnswerCmd(INT8U rCommPort, INT8U *pdataBuff, INT8U len)
     {
         /*"组通信应答帧"*/
         pdataBuff[0] = 0x68;
-        LIB_Reverse(mMtrAddr,pdataBuff+1,6);
+        //-LIB_Reverse(mMtrAddr,pdataBuff+1,6);//del
+       LIB_MemCpy(hostAddr,pdataBuff+1, 6);
     	pdataBuff[7] = 0x68;
     	if((nErrorCode > 0)||(n03CmdErrCode>0))
     	{
@@ -1874,7 +1877,8 @@ INT16U CM_Far03Cmd(INT8U *Pdata)
     stCmd03.len = *(Pdata+2);/*"获取数据区长度"*/
     stCmd03.DI = (Pdata+3);/*"获取数据标识首地址"*/
     LIB_MemCpy((INT8U *)stCmd03.DI,(INT8U *)&stCmd03.di,4);
-    stCmd03.pData = stCmd03.DI + 8;/*"指向实际数据区,跳过di和操作者代码"*/ 
+    stCmd03.pData = stCmd03.DI + 4; 
+    LIB_MemCpy(stCmd03.pData+4,stCmd03.pData,5);
     switch(stCmd03.di)
     {
 		case 0x070402FF:		

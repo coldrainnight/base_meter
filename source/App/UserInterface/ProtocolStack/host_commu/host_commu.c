@@ -1646,6 +1646,8 @@ void Host_Commu_Sec_Proc(void)
     tx_pkt_to_peer(0, 0x06, id, buf, len);
 }
 
+
+
 void Host_Commu_Frz_Data_Push(void)
 {
     UN_ID645 id;
@@ -1663,11 +1665,12 @@ void Host_Commu_Frz_Data_Push(void)
 	#endif
     GetSingle(E_SYS_TIME, tmp);
     get_sys_tm_645_fmt(tmp);
-    LIB_MemCpy(tmp, buf , 7);
-    len +=7;
+    LIB_MemCpy((INT8U *)&tmp[1], buf , 2);/*mmdd,Ìø¹ýÃë*/
+    LIB_MemCpy((INT8U *)&tmp[4], buf+2 , 3);/*ddmmyy,Ìø¹ýweek*/
+    len +=5;
 	  
     //get_bm_frz_data(buf+7);
-    //len = get_comm_data(buf, min_data, ARRAY_SIZE(min_data));
+    len = get_comm_data(buf, min_data, ARRAY_SIZE(min_data));
     len1 =get_bm_frz_data(buf+7);
     LIB_MemSet(0x11, buf+7,len1);
     len+=len1;
