@@ -1877,7 +1877,7 @@ INT16U CM_Far03Cmd(INT8U *Pdata)
     stCmd03.pData = stCmd03.DI + 4;/*"指向实际数据区"*/ 
     switch(stCmd03.di)
     {
-		case 0x070501FF:		
+		case 0x070402FF:		
 			RetVal.byte[0]= TCA_AuthHandle(&stCmd03);
 			break;
 		case 0x878002FF:
