@@ -930,7 +930,7 @@ INT8U pkt_queue_rx_proc(ST_FRAME645 *res, INT8U len, INT8U dev)
                     tx_reply_pkt_to_peer(0, 0x86, id, NULL, 0);
                     break;
                 case ID_SET_SHOW_PARA:
-                    tx_reply_pkt_to_peer(0, 0x86, id, NULL, 0);
+                    tx_reply_pkt_to_peer(0, 0x86, id, NULL, 0);// need to do 
                     break;
                 case ID_RTC_SYNC:
                     break;
@@ -1627,10 +1627,15 @@ void Host_Commu_Frz_Data_Push(void)
 {
     UN_ID645 id;
     INT8U buf[200];
-    INT8U len;
+    INT8U len=0;
     
     id.asLong = ID_BM_FRZ_DATA;
-    len = get_bm_frz_data(buf);
+    GetSingle(E_SYS_TIME, buf);/*"取系统时间"*/  
+    LIB_CharToBcdNByte(buf , 7);
+    len +=7;
+    LIB_RvsSelf(buf,len);
+	
+    len += get_bm_frz_data(buf);
     tx_pkt_to_peer(0, 0x06, id, buf, len);
 }
 
