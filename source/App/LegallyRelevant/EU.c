@@ -1463,8 +1463,8 @@ static void EngyTailAdd(void)
     RamEngyTailChk();
     MCU_PwrChkCloseINT();
 #ifdef EU_TEST
-    EngergyTemp.EngyP = 3600;
-    EngergyTemp.EngyQ = 3600;
+    EngergyTemp.EngyP = 36000;
+    EngergyTemp.EngyQ = 36000;
     if(0 == stMmtData.Quad[0])
     {
         stMmtData.Quad[0] = 1;
