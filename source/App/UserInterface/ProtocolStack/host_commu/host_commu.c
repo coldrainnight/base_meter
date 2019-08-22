@@ -1784,3 +1784,16 @@ void poweron_set_bm_info(void)
 }
 
 
+void Host_Commu_AccryChk_Push(void)
+{
+    UN_ID645 id;
+    INT8U buf[200];
+    INT8U len;
+    
+    id.asLong = ID_BM_SELF_MONITOR;
+    len=0;
+    len += GetSingle(E_MNT_AMP_ERR, buf + len);
+    tx_pkt_to_peer(0, 0x06, id, buf, len);
+}
+
+

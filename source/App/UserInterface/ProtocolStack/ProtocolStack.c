@@ -52,7 +52,7 @@ void ProtocolStackTask(void)
 
     if(TRUE == Task_ChkTsk_1s (MAINTASK_CM))
     {
-        //Host_Commu_Sec_Proc();
+        Host_Commu_Sec_Proc();
         COM_Monitor_1Sec();
         AL_698_1Sec();
 

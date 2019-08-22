@@ -152,13 +152,13 @@ struct TREE_LEAF
 #endif
 
 
-extern  const int Protocol_Tree_Root[35];
+extern  const int Protocol_Tree_Root[133];
 extern  const struct COMMUNAL_REVISE Protocol_Revise[29];
 extern  const struct REVISE_ID Protocol_Revise_Id[29];
 extern  const ST_FMT_ATTR Protocol_Format[66];
 extern  const struct COMMUNAL_PURVIEW Protocol_Purview[6];
 extern  const struct COMMUNAL_FUNCTION Protocol_Function[11];
-extern  const struct TREE_NODE Protocol_Tree_Node[440];
+extern  const struct TREE_NODE Protocol_Tree_Node[442];
 extern  const struct TREE_LEAF Protocol_Tree_Leaf[249];
 extern  const struct COMMUNAL_SHOWINFO Protocol_Showinfo[26];
 extern  const struct COMMUNAL_ID Protocol_Id[77];
