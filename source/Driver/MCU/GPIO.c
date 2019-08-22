@@ -824,6 +824,11 @@ void GPIO_EXTI_Enable(ST_GPIO_EXTICONF *EXTI_GpioConf)
     INT8U ExtiX;
     INT8U SelY;
     INT8U SelVal;
+
+    if(EXTI_GpioConf->PinId == 0xff)
+    {
+        return;
+    }
     
     PinToExtiInfo(EXTI_GpioConf->PinId,&ExtiX,&SelY,&SelVal);
     
@@ -880,6 +885,11 @@ void GPIO_EXTI_Disable(INT8U PinId)
     INT8U ExtiX;
     INT8U SelY;
     INT8U SelVal;
+
+    if(PinId == 0xff)
+    {
+        return;
+    }
 
     PinToExtiInfo(PinId,&ExtiX,&SelY,&SelVal);
     ExtiIsrTab[ExtiX][SelY]= NULL;
