@@ -166,7 +166,7 @@ extern INT8U Master_TX_Com_AnswerCmd(INT8U *pdataBuff, INT8U len, INT8U dev);
 extern INT8U Master_TX_Com_ProcessRecBytes(INT8U *pDataBuff, INT16U length);
 extern void user_req_pkt_outqueue(void);
 extern void Host_Commu_Bm_Data_Sync(INT8U type);
-
+extern void Host_Commu_AccryChk_Push(void);
 
 /******************************************************************************/
 

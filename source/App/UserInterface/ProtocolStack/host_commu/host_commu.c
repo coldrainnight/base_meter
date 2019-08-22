@@ -1357,8 +1357,8 @@ COMM_OBIS sec_data[] =
     {E_R_ENGY_II, E_UBCD_5_BYTE, -4},
     {E_R_ENGY_III, E_UBCD_5_BYTE, -4},
     {E_R_ENGY_IV, E_UBCD_5_BYTE, -4},
-    //{E_A_VOLT_CONT_TOTAL, E_UBCD_2_BYTE, -2},
-    //{E_A_CURR_CONT_TOTAL, E_UBCD_2_BYTE, -2},
+    {E_A_VOLT_CONT_TOTAL, E_UBCD_2_BYTE, -2},
+    {E_A_CURR_CONT_TOTAL, E_UBCD_2_BYTE, -2},
 };
 
 
@@ -1426,136 +1426,40 @@ INT16U get_bm_lrm_data(INT8U *buf)
     //Lrm_test();
     len = 0;
     GetSingle(E_METER_SAMPLE_STATUS, buf);
-	LIB_CharToBcdNByte(buf+len, 2);
     len += 2;
     GetSingle(E_SAMPLE_STATUS, buf + len);
-	LIB_CharToBcdNByte(buf+len, 2);
     len += 2;
 
     GetSingle(E_TMP_LINE_IN, buf + len);
-	LIB_CharToBcdNByte(buf+len, 2);
     len += 2;
     
     GetSingle(E_TMP_LINE_OUT, buf + len);
-	LIB_CharToBcdNByte(buf+len, 2);
     len += 2;
     GetSingle(E_TMP_N_IN, buf + len);
-	LIB_CharToBcdNByte(buf+len, 2);
     len += 2;
     GetSingle(E_TMP_N_OUT, buf + len);
-	LIB_CharToBcdNByte(buf+len, 2);
     len += 2;
 
-    GetSingle(E_MNT_MTR_TMP, buf + len);
-	LIB_CharToBcdNByte(buf+len, 2);
+    GetSingle(E_MNT_MTR_TMP, buf + len); 
     len += 2;
     GetSingle(E_MNT_MTR_HMDTY, buf + len);
-	LIB_CharToBcdNByte(buf+len, 2);
     len += 2;
 
     data=0;
     GetSingle(E_CLK_BAT_VOLT, (INT8U *)&data);
     data=data/10;
     LIB_MemCpy((INT8U *)&data, buf + len, 2);
-	LIB_CharToBcdNByte(buf+len, 2);
     len += 2;
 
     GetSingle(E_CURR_RESIDUAL, buf + len);
-	LIB_CharToBcdNByte(buf+len, 4);
     len += 4;
     
     GetSingle(E_VOLT_LA, buf + len);
-	LIB_CharToBcdNByte(buf+len, 2);
     len += 2;
     GetSingle(E_CURR_LA, buf + len);
-	INT32U curr=5000;
-	LIB_MemCpy((INT8U *)&curr, buf + len, 4);
-	LIB_CharToBcdNByte(buf+len,4);
     len += 4;   
 
     GetSingle(E_ACTIVE_PWR, buf + len);
-	INT32U pwr=11000;
-	LIB_MemCpy((INT8U *)&pwr, buf + len, 4);
-	LIB_CharToBcdNByte(buf+len, 4);
-    len += 4; 
-    GetSingle(E_REACTIVE_PWR, buf + len); 
-	LIB_CharToBcdNByte(buf+len, 4);
-    len += 4; 
-
-    GetSingle(E_FACTOR, buf + len);
-	INT32U fact=10000;
-	LIB_MemCpy((INT8U *)&fact, buf + len, 4);
-	LIB_CharToBcdNByte(buf+len, 4);
-    len += 4; 
-
-    data = 0;
-    GetSingle(E_FREQ, (INT8U *)&data);
-    data /= LIB_Pow10(-2 - CURR_DECIMAL_POINT);
-    LIB_MemCpy((INT8U *)&data, buf + len, 2);
-	LIB_CharToBcdNByte(buf+len, 2);
-    len += 2; 
-
-    GetSingle(E_PA_ENGY, buf + len);
-	engy+=1111;
-	LIB_MemCpy((INT8U *)&engy, buf + len, 5);
-	LIB_CharToBcdNByte(buf+len, 5);
-    len += 5; 
-	GetSingle(E_NA_ENGY, buf + len);
-	LIB_CharToBcdNByte(buf+len, 5);
-    len += 5;
-    #if (REACTIVE_ENGY_EN == 1)
-    /*"四象限无功电量  "*/
-    GetSingle(E_R_ENGY_I, buf + len);
-	LIB_CharToBcdNByte(buf+len, 5);
-    len += 5;
-    GetSingle(E_R_ENGY_II, buf + len);
-	LIB_CharToBcdNByte(buf+len, 5);
-    len += 5;
-    GetSingle(E_R_ENGY_III, buf + len);
-	LIB_CharToBcdNByte(buf+len, 5);
-    len += 5;
-    GetSingle(E_R_ENGY_IV, buf + len);
-	LIB_CharToBcdNByte(buf+len, 5);
-    len += 5;
-    #endif
-
-#if (HARMONIC_MODE == 1)
-    /*"A相电压、电流总谐波畸变率"*/
-#if 0
-    GetSingle(E_A_VOLT_CONT_TOTAL, buf + len);
-	LIB_CharToBcdNByte(buf+len, 2);
-    len += 2;
-    GetSingle(E_A_CURR_CONT_TOTAL, buf + len);
-	LIB_CharToBcdNByte(buf+len, 2);
-    len += 2;
-	#endif
-#endif
-    
-    return len;
-}
-
-INT32U engyMin;
-
-INT16U get_bm_frz_data(INT8U *buf)
-{
-    INT16U len;
-    INT32U data;
-    //INT8U data[32];
-
-    len = 0;
-    GetSingle(E_VOLT_LA, buf + len);
-    len += 2;
-    GetSingle(E_CURR_LA, buf + len);
-    INT32U curr=10000;
-    LIB_CharToBcdNByte((INT8U *)&curr,4);
-    LIB_MemCpy((INT8U *)&curr, buf + len, 4);
-   // LIB_CharToBcdNByte(buf+len,4);
-    len += 4;   
-
-    GetSingle(E_ACTIVE_PWR, buf + len);
-    INT32U pwr=22000;
-    LIB_MemCpy((INT8U *)&pwr, buf + len, 4);
-    LIB_CharToBcdNByte(buf+len, 4);
     len += 4; 
     GetSingle(E_REACTIVE_PWR, buf + len);
     len += 4; 
@@ -1570,9 +1474,59 @@ INT16U get_bm_frz_data(INT8U *buf)
     len += 2; 
 
     GetSingle(E_PA_ENGY, buf + len);
-	engyMin+=2222*60;
-	LIB_MemCpy((INT8U *)&engy, buf + len, 5);
-	LIB_CharToBcdNByte(buf+len, 5);
+    len += 5; 
+	GetSingle(E_NA_ENGY, buf + len);
+    len += 5;
+    #if (REACTIVE_ENGY_EN == 1)
+    /*"四象限无功电量  "*/
+    GetSingle(E_R_ENGY_I, buf + len);
+    len += 5;
+    GetSingle(E_R_ENGY_II, buf + len);
+    len += 5;
+    GetSingle(E_R_ENGY_III, buf + len);
+    len += 5;
+    GetSingle(E_R_ENGY_IV, buf + len);
+    len += 5;
+    #endif
+
+#if (HARMONIC_MODE == 1)
+    /*"A相电压、电流总谐波畸变率"*/
+    GetSingle(E_A_VOLT_CONT_TOTAL, buf + len);
+    len += 2;
+    GetSingle(E_A_CURR_CONT_TOTAL, buf + len);
+    len += 2;
+#endif
+    
+    return len;
+}
+
+INT16U get_bm_frz_data(INT8U *buf)
+{
+    INT16U len;
+    INT32U data;
+    //INT8U data[32];
+
+    len = 0;
+    GetSingle(E_VOLT_LA, buf + len);
+    len += 2;
+    GetSingle(E_CURR_LA, buf + len);
+    len += 4;   
+
+    GetSingle(E_ACTIVE_PWR, buf + len);
+    len += 4; 
+    GetSingle(E_REACTIVE_PWR, buf + len);
+    len += 4; 
+
+    GetSingle(E_FACTOR, buf + len);
+    len += 4; 
+
+    data = 0;
+    GetSingle(E_FREQ, (INT8U *)&data);
+    data /= LIB_Pow10(-2 - CURR_DECIMAL_POINT);
+    LIB_MemCpy((INT8U *)&data, buf + len, 2);
+    len += 2; 
+
+    GetSingle(E_PA_ENGY, buf + len);
     len += 5; 
 	GetSingle(E_NA_ENGY, buf + len);
     len += 5;
@@ -1641,7 +1595,6 @@ void Host_Commu_Sec_Proc(void)
     len +=7;
 	
     // len += get_bm_lrm_data(buf+len);//len
-    get_bm_lrm_data(buf+len);
     len += get_comm_data(buf+len, sec_data, ARRAY_SIZE(sec_data));
     tx_pkt_to_peer(0, 0x06, id, buf, len);
 }
