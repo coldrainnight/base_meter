@@ -2158,15 +2158,21 @@ static void AccrcyChkInit(void)
 extern void Host_Commu_AccryChk_Push(void);
 static void AccrcyChkMinTask(void)
 {
+   ST_7TIME_FORM nowTime;
    if(MntPara.AccrcyChkRfrshT == 0)
    {
        mAccrcyRfrshCnt=0;
        mPwrAmpErr=0;
-       return;
+       //return;//debug
    }
    
    mAccrcyRfrshCnt++;
-   if(mAccrcyRfrshCnt >= MntPara.AccrcyChkRfrshT)
+
+   
+
+    GetSingle(E_SYS_TIME, (INT8U *)&nowTime);
+   // if(mAccrcyRfrshCnt >= MntPara.AccrcyChkRfrshT)
+   if(0x00==(nowTime.min%0x03))
    {
        mAccrcyRfrshCnt=0;
        GetSingle(E_AMP_ERR, (INT8U *)&mPwrAmpErr);
