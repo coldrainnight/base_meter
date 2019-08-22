@@ -9,6 +9,9 @@
 #include "PlatForm.h"
 #include "host_commu.h"
 
+
+//#define FMT_BCD 1
+
 INT32U stop_for_init;
 
 INT16U rx_tms;
@@ -1606,7 +1609,7 @@ void Host_Commu_Frz_Data_Push(void)
     UN_ID645 id;
     INT8U buf[200];
     INT8U len=0;
-    INT8U len1;
+    
     INT8U tmp[10];
     
     id.asLong = ID_BM_FRZ_DATA;
@@ -1621,12 +1624,15 @@ void Host_Commu_Frz_Data_Push(void)
     LIB_MemCpy((INT8U *)&tmp[1], buf , 2);/*mmdd,跳过秒*/
     LIB_MemCpy((INT8U *)&tmp[4], buf+2 , 3);/*ddmmyy,跳过week*/
     len +=5;
-	  
+	  #ifdef FMT_BCD
     //get_bm_frz_data(buf+7);
-   // len = get_comm_data(buf, min_data, ARRAY_SIZE(min_data));
-    len1 =get_bm_frz_data(buf+5);
+       len = get_comm_data(buf, min_data, ARRAY_SIZE(min_data));
+ 	#else
+    INT8U len1;
+    len1 =get_bm_frz_data(buf+len);
     LIB_MemSet(0x11, buf+5,len1);
     len+=len1;
+	#endif
     tx_pkt_to_peer(0, 0x06, id, buf, len);
 }
 
@@ -1789,10 +1795,20 @@ void Host_Commu_AccryChk_Push(void)
     UN_ID645 id;
     INT8U buf[200];
     INT8U len;
+    INT8U tmp[10];
     
     id.asLong = ID_BM_SELF_MONITOR;
     len=0;
+    GetSingle(E_SYS_TIME, tmp);
+    get_sys_tm_645_fmt(tmp);
+    LIB_MemCpy((INT8U *)&tmp[1], buf , 2);/*mmdd,跳过秒*/
+    LIB_MemCpy((INT8U *)&tmp[4], buf+2 , 3);/*ddmmyy,跳过week*/
+    len +=5;
     len += GetSingle(E_MNT_AMP_ERR, buf + len);
+    LIB_MemSet(0x22, buf+5,2);//debug
+    //len += GetSingle(E_MNT_AMP_ERR, buf + len);
+     LIB_MemSet(0xFF, buf+len,4);
+    len+=4;
     tx_pkt_to_peer(0, 0x06, id, buf, len);
 }
 
