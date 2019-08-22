@@ -83,16 +83,16 @@
 #define ACTI_STATUS            0/*" 功率方向正向 "*/
 #define MEA_DIR_NUM            3/*" 功率反向累计数"*/
 
-#define _MU_W_PARA              0x20
-#define _MU_W_CMD               0x21
-#define _MU_R_PARA              0x23
-#define _MU_R_DATA              0x25
-#define _MU_R_REG               0x26
-#define _MU_W_AMEND             0x27
-#define _MU_R_AMEND             0x28
-#define _RU_W_PARA              0x29
-#define _RU_R_PARA              0x30
-#define _RU_W_CMD               0x31
+#define MU_W_PARA              0x20
+#define MU_W_CMD               0x21
+#define MU_R_PARA              0x23
+#define MU_R_DATA              0x25
+#define MU_R_REG               0x26
+#define MU_W_AMEND             0x27
+#define MU_R_AMEND             0x28
+#define RU_W_PARA              0x29
+#define RU_R_PARA              0x30
+#define RU_W_CMD               0x31
 
 /*"--------错误类型--------"*/
 #define COMM_ERR_NOERR     0x00    /*"无错误"*/
@@ -190,13 +190,15 @@
 #define	_05_R_PULSE_FLAG			    0x89	/*"     R       1	    -----       计量输出数据"*/
 
 /*"打包读EDT参数宏"*/
-#define		EDT_PARA_NUM		6U
-#define		EDT_STD_POS_IN_ST	34U
-#define		EDT_ALLP_CMD_R_LEN	58U
+
+#define R_ALLP_BASE_NUM		            17
+#define	R_ALLP_BASE_LEN	                (R_ALLP_BASE_NUM*2)
+#define	EDT_PARA_NUM		            8U
+#define R_ALLP_LEN_WITH_EDT             (R_ALLP_BASE_LEN + (EDT_PARA_NUM*4))
 
 /* 负数数值转换 */
-#define     ADD_IF_SIGNED_VALUE           80000000
-#define     IF_SIGNED_BIT_SET             0x80000000
+#define ADD_IF_SIGNED_VALUE             80000000
+#define IF_SIGNED_BIT_SET               0x80000000
 
 #if HARMONIC_MODE
 #define	nPhs			1

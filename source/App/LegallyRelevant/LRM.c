@@ -49,7 +49,7 @@ void LRM_Init(INT8U mode)
         LrmPdDataInit();
         EU_Init(mode);
     }
-    if(ChkStatus(E_MTR_RST) == TRUE)
+    if(ChkStatus(E_MTR_RST) == TRUE || mode == MCU_LPMODE_DEEP)
     {
         SC_SysClkInit(mode);
         //MCU_DelayMs(300);/*" 等下管理版 "*/

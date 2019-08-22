@@ -633,19 +633,19 @@ void  MU_ReadInstantData(INT16U reg)
     else if(reg == R_ALLP)
     {
     	#if EDT_MODE
-		if(MU_ReadCmp(reg, EDT_ALLP_CMD_R_LEN) == TRUE)
+		if(MU_ReadCmp(reg, R_ALLP_LEN_WITH_EDT) == TRUE)
 		#else
-        if(MU_ReadCmp(reg,34) == TRUE)/*"只要有一次正确就处理"*/
+        if(MU_ReadCmp(reg, R_ALLP_BASE_LEN) == TRUE)/*"只要有一次正确就处理"*/
 		#endif
       	{
-      	    for(i=0;i<17;i++)
+      	    for(i=0;i<R_ALLP_BASE_NUM;i++)
             {
     		    LIB_MemCpy((INT8U *)&gMeaIc_Uart.Uart_Rx_Data[2*i+4], (INT8U *)(&gMU_Para.ram_adj_data)+2*i,2);
             }
 			#if EDT_MODE
 			for(i=0;i<EDT_PARA_NUM;i++)
 			{
-				LIB_MemCpy((INT8U *)&gMeaIc_Uart.Uart_Rx_Data[4U*i+EDT_STD_POS_IN_ST+4], (INT8U *)(&gMU_Para.edt_stddata)+4*i,4);
+				LIB_MemCpy((INT8U *)&gMeaIc_Uart.Uart_Rx_Data[4U*i+R_ALLP_BASE_LEN+4], (INT8U *)(&gMU_Para.edt_stddata)+4*i,4);
 			}
 			#endif
      	}
@@ -807,7 +807,7 @@ INT8U MU_JustMtr(INT8U *pData)
 
 	CMD = pData[3];
 
-	if((ChkStatus(E_FAC) == FALSE)&&((CMD==_MU_W_PARA)||(CMD==_MU_W_CMD)||(CMD==_MU_W_AMEND)||(CMD==_RU_W_PARA)||(CMD==_RU_W_CMD)))
+	if((ChkStatus(E_FAC) == FALSE)&&((CMD==MU_W_PARA)||(CMD==MU_W_CMD)||(CMD==MU_W_AMEND)||(CMD==RU_W_PARA)||(CMD==RU_W_CMD)))
 	{
 	 	RetVal = COMM_ERR_PASSWORD;/*" 在出厂状态下只能读计量及RTC数据"*/
 	}
@@ -815,42 +815,42 @@ INT8U MU_JustMtr(INT8U *pData)
 	{
         switch (CMD)
 		{
-            case _MU_W_PARA:/*"参数设置 发送数据长度4个字节"*/
+            case MU_W_PARA:/*"参数设置 发送数据长度4个字节"*/
             {
                 RetVal = MU_CaliCmd1(pData);
                 DataLength = 0;
             }
             break;
 
-            case _MU_W_CMD:/*"参数设置 发送数据长度4个字节"*/
+            case MU_W_CMD:/*"参数设置 发送数据长度4个字节"*/
             {
                 RetVal = MU_CaliCmd2(pData);
                 DataLength = 0;
             }
             break;
 
-            case _MU_R_PARA:/*"参数读取 返回数据长度4个字节"*/
+            case MU_R_PARA:/*"参数读取 返回数据长度4个字节"*/
             {
                 RetVal = MU_CaliReadPara(pData);
                 DataLength = 4;
             }
             break;
 
-            case _MU_R_DATA:/*"瞬时数据读取,返回数据长度4个字节"*/
+            case MU_R_DATA:/*"瞬时数据读取,返回数据长度4个字节"*/
             {
                 RetVal = MU_CaliReadData(pData);
                 DataLength = 4;
             }
             break;
 
-            case _MU_R_REG:/*"寄存器数据读取,返回数据长度4个字节"*/
+            case MU_R_REG:/*"寄存器数据读取,返回数据长度4个字节"*/
             {
                 RetVal = MU_CaliReadOther(pData,&DataLength);
                 DataLength = 4;
             }
             break;
 
-            case _MU_W_AMEND:/*"写调校参数"*/
+            case MU_W_AMEND:/*"写调校参数"*/
             {
                 #if AMEND_MODE
                 RetVal = Set_Amend(pData);
@@ -859,7 +859,7 @@ INT8U MU_JustMtr(INT8U *pData)
             }
             break;
 
-            case _MU_R_AMEND:/*"读调校参数"*/
+            case MU_R_AMEND:/*"读调校参数"*/
             {
                 #if AMEND_MODE
                 RetVal = Read_Amend(pData);
@@ -870,21 +870,21 @@ INT8U MU_JustMtr(INT8U *pData)
             }
             break;
 
-            case _RU_W_PARA:   					/*""   通过645协议写取RTC补偿参数"*/
+            case RU_W_PARA:   					/*""   通过645协议写取RTC补偿参数"*/
             {
                 RetVal = RTC_CaliWrite(pData);
                 DataLength = 0;
             }
             break;
 
-            case _RU_R_PARA:					/*"" 	通过645协议读取RTC补偿参数 "*/
+            case RU_R_PARA:					/*"" 	通过645协议读取RTC补偿参数 "*/
             {
                 RetVal = RTC_CaliRead(pData);
                 DataLength = 4;
             }
             break;
 
-            case _RU_W_CMD:					/*"" 	通过645协议修改、校正RTC补偿参数 "*/
+            case RU_W_CMD:					/*"" 	通过645协议修改、校正RTC补偿参数 "*/
             {
                 RetVal = RTC_CaliCtrl(pData);
                 DataLength = 0;
