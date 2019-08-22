@@ -600,6 +600,13 @@ INT8U set_bm_info_pkt(ST_FRAME645 *nResult)
                 s_id.asLong = ID_SET_BM_TM;
                 tx_pkt_to_peer(0, 0x11, s_id, tmp, len);
             }
+	     if(id == 0x84000101 || id == 0x84000102|| id == 0x8400010C)
+            {/*" 写时间 "*/
+                GetSingle(E_SYS_TIME, tmp);
+                len = 7;
+                s_id.asLong = ID_SET_BM_TM;
+                tx_pkt_to_peer(0, 0x11, s_id, tmp, len);
+            }
             if(id == 0x04000401)
             {/*" 写表地址 "*/
                 GetSingle(E_COMM_ADDR, tmp);
