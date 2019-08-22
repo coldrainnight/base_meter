@@ -65,6 +65,7 @@ typedef struct
 	INT8U Flag;
 	INT8U BackOffset;
 	TCA_AuthFactor AuthFactor[3];    
+    TCA_AuthFactor CurAuthFactor;  
 }TCA_AuthSaveData;
 
 
@@ -94,6 +95,7 @@ typedef __packed struct
 #define TCA_AUTHFACTOR1_SHIFT		(TCA_SAVE_DATA_SHIFT+(FIND(TCA_AuthSaveData,AuthFactor)))
 #define TCA_AUTHFACTOR2_SHIFT		(TCA_AUTHFACTOR1_SHIFT+sizeof(TCA_AuthFactor))
 #define TCA_AUTHFACTOR3_SHIFT		(TCA_AUTHFACTOR2_SHIFT+sizeof(TCA_AuthFactor))
+#define TCA_CURAUTHFACTOR_SHIFT		(TCA_AUTHFACTOR3_SHIFT+sizeof(TCA_AuthFactor))
 
 extern void TCA_Init(INT8U mode);
 extern void TCA_OnEvyMin(void);

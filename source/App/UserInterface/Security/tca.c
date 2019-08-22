@@ -59,6 +59,11 @@ void	TCA_WriteBackupFactor(INT8U offset,TCA_AuthFactor factor)
 		default:
 			break;
 	}
+    
+    if(offset < 3)
+    {
+        FS_WriteFile(E_FILE_UI_DATA , TCA_CURAUTHFACTOR_SHIFT, (INT8U *)factor.asBytes, sizeof(TCA_AuthFactor));/*"备份时，同时保存当前认证因子"*/
+    }
 }
 
 
@@ -79,21 +84,16 @@ void TCA_Init(INT8U mode)
 		FS_WriteFile(E_FILE_UI_DATA , TCA_AUTHALLOW_SHIFT, writetemp, 3);
 		tcauthtime = 24*60;
 		authallowkeep = 0;
+        FS_WriteFile(E_FILE_UI_DATA , TCA_AUTHFACTOR1_SHIFT, NULL, sizeof(TCA_AuthFactor)*4);
+        authfactor.asLong = 0;
 	}
 	else if (mode  == MCU_RUNMODE)
 	{
 		FS_ReadFile(E_FILE_UI_DATA , TCA_AUTHALLOW_SHIFT, writetemp, 3);
 		authparam.AuthAllow = writetemp[0];
 		authparam.LimtPermiss = writetemp[1];
-		BackOffset = writetemp[2];
-		if (BackOffset == 0xFF)
-		{
-			authfactor.asLong = 0x0000FFFF;
-		}
-		else
-		{
-			TCA_ReadBackupFactor(BackOffset);
-		}
+        FS_ReadFile(E_FILE_UI_DATA , TCA_CURAUTHFACTOR_SHIFT, (INT8U *)authfactor.asBytes, sizeof(TCA_AuthFactor));/*"读取最近备份保存的当前认证因子"*/
+
 		if (tcauthtime > 24*60)
 		{
 			tcauthtime = 24*60;
@@ -275,6 +275,7 @@ INT8U TCA_Auth_Init(ST_CMD03 *pPkg)
 	BackOffset[0] = 0;
 	BackOffset[1] = 0xFF;
 	FS_WriteFile(E_FILE_UI_DATA , TCA_FLAG_SHIFT, BackOffset, 2);
+    FS_WriteFile(E_FILE_UI_DATA , TCA_CURAUTHFACTOR_SHIFT, (INT8U*) authfactor.asBytes, sizeof(TCA_AuthFactor));/*"保存初始认证因子"*/
 	tcauthtime = 24*60;
 	return RET_OK;
 }
