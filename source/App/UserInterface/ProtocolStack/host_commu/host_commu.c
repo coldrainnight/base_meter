@@ -10,7 +10,7 @@
 #include "host_commu.h"
 
 
-//#define FMT_BCD 1
+#define FMT_BCD 1
 
 INT32U stop_for_init;
 
@@ -1396,7 +1396,7 @@ INT16U get_comm_data(INT8U *buf, COMM_OBIS *tbl, INT8U num)
     ST_FMT_ATTR dst_fmt;
     INT8U per_dst_len;
     INT16U len;
-    Lrm_test();
+    //Lrm_test();
 
     len = 0;
     for(i=0; i<num; i++)
@@ -1626,11 +1626,11 @@ void Host_Commu_Frz_Data_Push(void)
     len +=5;
 	  #ifdef FMT_BCD
     //get_bm_frz_data(buf+7);
-       len = get_comm_data(buf, min_data, ARRAY_SIZE(min_data));
+       len += get_comm_data(buf+len, min_data, ARRAY_SIZE(min_data));
  	#else
     INT8U len1;
     len1 =get_bm_frz_data(buf+len);
-    LIB_MemSet(0x11, buf+5,len1);
+    LIB_MemSet(0x11, buf+len,len1);//debug
     len+=len1;
 	#endif
     tx_pkt_to_peer(0, 0x06, id, buf, len);
