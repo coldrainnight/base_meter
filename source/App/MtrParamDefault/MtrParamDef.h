@@ -148,6 +148,7 @@ typedef struct
     INT8U RelayErrChkDelayT; /*"负荷开关误动作事件判定时间"*/
     INT8U PwrAbnormalDelayT; /*"电源异常事件判定时间"*/
     INT8U PwrDownDelayT; /*"电能表掉电事件判定时间"*/
+    INT8U AccrcyChkRfrshT; /*"误差自监测更新时间"*/
     CRC_DATA_TP crc;
 }ST_MNT_PARA;
 

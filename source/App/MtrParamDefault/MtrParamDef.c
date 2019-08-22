@@ -127,6 +127,7 @@ const ST_MNT_PARA MntParaDefault =
 				0,
 				#endif
                 60,            /*"电能表掉电事件判定时间"*/
+                 3,             /*"误差自监测更新时间"*/
                 00,            /*"crc校验"*/
         };
 #pragma default_variable_attributes=
