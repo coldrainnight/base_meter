@@ -1,9 +1,9 @@
 /*"*************************************************************"*/
 /*"FileName: MNT_data.c"*/
 /*"Author:    		Version :  "*/
-/*"2019-08-07 10:25:02"*/
+/*"2019-08-21 11:03:30"*/
 /*"Description: 电能表状态监测模块对象列表定义"*/
-/*"总字节数: 175          "*/
+/*"总字节数: 187          "*/
 /*"Function List:                     "*/
 /*"                                    "*/
 /*"History:                           "*/
@@ -43,6 +43,8 @@ const ST_SINGLE_DATA_ATTR stMntSingleDataList[] =
   {E_MNT_ESAM_ID,(RAM)+(INT32U)&gGlxChgEsamID[0],0,0x0D},
   {E_MNT_MTR_TMP,(RAM)+(INT32U)&gMtrTmp,2,0x38},
   {E_MNT_MTR_HMDTY,(RAM)+(INT32U)&gMtrHmdty,2,0x3C},
+  {E_MNT_AMP_ERR,(RAM)+(INT32U)&mPwrAmpErr,4,0x3D},
+  {E_ACCRCY_RFRSHT,(RAM)+(INT32U)&MntPara.AccrcyChkRfrshT,1,0x01},
  };
 const ST_ACTION_ATTR stMntActionList[] = 
  {  

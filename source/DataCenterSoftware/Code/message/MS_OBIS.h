@@ -1,7 +1,7 @@
 /*"*************************************************************"*/
 /*"FileName: MS_OBIS.h"*/
 /*"Author:    		Version :  "*/
-/*"2019-08-16 13:53:17"*/
+/*"2019-08-21 11:03:30"*/
 /*"Description: 电能表软件平台数据对象标识定义"*/
 /*"总字节数:          "*/
 /*"Function List:                     "*/
@@ -307,6 +307,8 @@ typedef struct
     E_MNT_ESAM_ID,/*"ESAM序号"*/
     E_MNT_MTR_TMP,/*"表内温度"*/
     E_MNT_MTR_HMDTY,/*"表内湿度"*/
+    E_MNT_AMP_ERR,/*"功率幅值误差"*/
+    E_ACCRCY_RFRSHT,/*"误差自检周期"*/
     E_MNT_EVNT_CLR = 0x4FE0,/*"事件清零"*/
     E_MNT_PWR_DOWN,/*"掉电处理"*/
     E_OUT_FAC,/*"退出工厂"*/
