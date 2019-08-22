@@ -806,7 +806,7 @@ static INT8U CM_08Cmd(ST_FRAME645 *rpResult)
     /*" 无应答"*/
 }
 
-
+INT8U changeflag=0;
 INT8U CM_AnswerCmd(INT8U rCommPort, INT8U *pdataBuff, INT8U len)
 {
     ST_FRAME645 nResult;
@@ -831,6 +831,11 @@ INT8U CM_AnswerCmd(INT8U rCommPort, INT8U *pdataBuff, INT8U len)
     LIB_MemSet(0, (INT8U *)&nResult, sizeof(ST_FRAME645));
     nResult.commPort = rCommPort;
     nResult.frmLen = len;
+	if(pdataBuff[13]==0x84)
+		{
+		pdataBuff[13]=0x04;
+		changeflag=1;
+		}
     ParseFrame(pdataBuff, &nResult);
     //nResult.dataId.asLong = 0x03300D01;
     //nResult.dataId.asLong = 0x03300101;
@@ -1115,6 +1120,11 @@ INT8U CM_AnswerCmd(INT8U rCommPort, INT8U *pdataBuff, INT8U len)
                 }
     	}
     	pdataBuff[9] = AnswerLen;
+		if(changeflag)
+			{
+			//pdataBuff[13]+=0x80; 
+			changeflag=0;
+			}
     	if(nResult.command != 0x05) /*"05命令不加33"*/
         {
             for(i = 0; i < AnswerLen; i++)

@@ -1813,3 +1813,14 @@ void Host_Commu_AccryChk_Push(void)
 }
 
 
+#if 0
+10^k<tmp&&10^(k+1)>tmp
+memset(buf,0,(k+1)/2);
+for(i=0;i<k;i++)
+{
+mod[i]=tmp%10;
+tmp/=10;
+lsh=(i%2)*4;   17245             bcd   0x45   0x72   0x01
+buf[i/2]|=mod[i]<<lsh;
+}
+#endif
