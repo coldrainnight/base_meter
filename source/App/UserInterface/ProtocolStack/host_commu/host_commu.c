@@ -1623,9 +1623,9 @@ void Host_Commu_Frz_Data_Push(void)
     len +=5;
 	  
     //get_bm_frz_data(buf+7);
-    len = get_comm_data(buf, min_data, ARRAY_SIZE(min_data));
-    len1 =get_bm_frz_data(buf+7);
-    LIB_MemSet(0x11, buf+7,len1);
+   // len = get_comm_data(buf, min_data, ARRAY_SIZE(min_data));
+    len1 =get_bm_frz_data(buf+5);
+    LIB_MemSet(0x11, buf+5,len1);
     len+=len1;
     tx_pkt_to_peer(0, 0x06, id, buf, len);
 }
