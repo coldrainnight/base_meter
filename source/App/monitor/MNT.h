@@ -261,6 +261,10 @@ extern INT16U gMtrHmdty;  /*"表内湿度"*/
 extern INT8U gGlxChgEsamID[8];  /*"管理芯ESAM ID"*/
 #endif
 
+#ifdef ACCRCY_CHK
+extern INT32S mPwrAmpErr;
+#endif
+
 extern void MNT_Init(INT8U mode);
 extern void FirstPwrOnChk(void);
 extern INT8S MNT_PwrDown(void *pIn, void *pOut);

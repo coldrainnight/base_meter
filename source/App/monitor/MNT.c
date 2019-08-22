@@ -1060,6 +1060,7 @@ INT8S MNT_EvtParaCal(void *pIn, void *pOut)
     MntPara.RelayErrChkDelayT=5; /*"负荷开关误动作事件判定时间"*/
     MntPara.PwrAbnormalDelayT=0; /*"电源异常事件判定时间"*/
     MntPara.PwrDownDelayT=60; /*"电能表掉电事件判定时间"*/
+    MntPara.AccrcyChkRfrshT=3; /*"误差自监测更新时间"*/ 
     MntPara.crc=CRC16((INT8U *)&MntPara, FIND(ST_MNT_PARA, crc));
     FS_WriteFile(E_FILE_MNT_PARA, 0, (INT8U *)&MntPara, sizeof(ST_MNT_PARA));
    return TRUE;

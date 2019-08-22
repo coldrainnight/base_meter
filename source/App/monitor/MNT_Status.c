@@ -80,6 +80,11 @@ static INT8U mGlxCommCnt;     /*"管理芯异常通信计数器"*/
 #define MAX_GLXCOMM_DELAY (60)   /*"管理芯异常通信计数器最大延时"*/
 #endif
 
+#ifdef ACCRCY_CHK
+static INT8U mAccrcyRfrshCnt;    /*"误差自监测更新时间  单位  分"*/
+INT32S mPwrAmpErr;
+#endif
+
 void OutFac(void);
 
 static void RstChk(void);
@@ -150,6 +155,10 @@ static void GlxChgChkSecTask(void);
 #ifdef GLX_COMM_CHK
 static void GlxCommChkInit(void);
 static void GlxCommChkSecTask(void);
+#endif
+#ifdef ACCRCY_CHK
+static void AccrcyChkInit(void);
+static void AccrcyChkMinTask(void);
 #endif
 /*"*****************************************************************************"*/
 /*"  Function:       StatusInit"*/
@@ -307,6 +316,9 @@ void StatusTask1sPD(void)
 void StatusTask1Min(void)
 {
     FacRemainTimeDis();
+    #ifdef ACCRCY_CHK
+    AccrcyChkMinTask();
+    #endif
 }
 /*"*****************************************************************************"*/
 /*"  Function:       RstChk"*/
@@ -1831,6 +1843,9 @@ void MNT_PwrUpSEInit(void)
    ClkErrInit();
 
    OscErrInit();
+#ifdef ACCRCY_CHK
+   AccrcyChkInit();
+#endif
 }
 
 const EN_MTR_STATUS bm_status[] =
@@ -2111,6 +2126,52 @@ static void GlxCommChkSecTask(void)
            mGlxCommCnt=0;
         }
     }
+}
+#endif
+
+#ifdef ACCRCY_CHK
+/*"*****************************************************************************"*/
+/*"  Function:       AccrcyChkInit"*/
+/*"  Description:   "*/
+/*"  Calls:          "*/
+/*"  Called By:   "*/
+/*"  Input:          "*/
+/*"  Output:         "*/
+/*"  Return:         "*/
+/*"  Others:         "*/
+/*"*****************************************************************************"*/
+static void AccrcyChkInit(void)
+{
+   mAccrcyRfrshCnt=0;
+   mPwrAmpErr=0;
+}
+/*"*****************************************************************************"*/
+/*"  Function:       AccrcyChkMinTask"*/
+/*"  Description:   "*/
+/*"  Calls:          "*/
+/*"  Called By:   "*/
+/*"  Input:          "*/
+/*"  Output:         "*/
+/*"  Return:         "*/
+/*"  Others:         "*/
+/*"*****************************************************************************"*/
+extern void Host_Commu_AccryChk_Push(void);
+static void AccrcyChkMinTask(void)
+{
+   if(MntPara.AccrcyChkRfrshT == 0)
+   {
+       mAccrcyRfrshCnt=0;
+       mPwrAmpErr=0;
+       return;
+   }
+   
+   mAccrcyRfrshCnt++;
+   if(mAccrcyRfrshCnt >= MntPara.AccrcyChkRfrshT)
+   {
+       mAccrcyRfrshCnt=0;
+       GetSingle(E_AMP_ERR, (INT8U *)&mPwrAmpErr);
+       Host_Commu_AccryChk_Push();
+   }
 }
 #endif
 

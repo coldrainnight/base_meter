@@ -124,6 +124,8 @@
 
 #define     GLX_COMM_CHK 1      /*"管理芯通信异常监测使能"*/
 
+#define     ACCRCY_CHK   1        /*"误差自监测使能"*/
+
 #endif
 
 #endif
